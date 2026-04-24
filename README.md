@@ -100,7 +100,6 @@ Joedo/                          Xcode project
 └── scripts/
     ├── build_dmg.sh            Build + sign + package DMG
     └── reset_state.sh          Wipe app state for first-launch testing
-docs/                           Project plan + non-technical overview
 source-assets/                  Master icon files (not bundled into the app directly)
 ```
 
