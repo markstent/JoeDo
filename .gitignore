@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+
+# Claude Code local state
+.claude/
+
+# Xcode build + derived data
+Joedo/build/
+Joedo/dist/
+
+# Xcode user-specific (schemes, window layouts, breakpoints)
+**/xcuserdata/
+*.xcuserstate
+*.xcuserdatad/
+*.moved-aside
+
+# Playgrounds / Pods / Swift Package Manager
+*.xcworkspace/
+!Joedo/Joedo.xcodeproj/project.xcworkspace/
+Joedo/Joedo.xcodeproj/project.xcworkspace/xcuserdata/
+.swiftpm/
+
+# CoreData generated
+**/*.xcdatamodeld/*.xccurrentversion
+
+# Editor junk
+*~
+*.swp
+*.tmp
