@@ -5,7 +5,7 @@ A minimalist, gesture-driven to-do app for macOS. Lives in your menu bar. Type l
 Inspired by the iOS app **Clear**: coloured heatmap rows, bold typography, no chrome. JoeDo is the desktop take.
 
 <p align="center">
-  <img src="source-assets/JoeDo_1024.png" alt="JoeDo icon" width="220" />
+  <img src="source-assets/JoeDo_Readme_Image.png" alt="JoeDo" width="720" />
 </p>
 
 ## Features
