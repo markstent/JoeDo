@@ -27,3 +27,6 @@ Joedo/Joedo.xcodeproj/project.xcworkspace/xcuserdata/
 *~
 *.swp
 *.tmp
+
+# Internal working docs (plan, overview, setup notes)
+docs/
