@@ -116,6 +116,7 @@ Press `⇧⌘K` inside a list, or right-click a list on the home screen and choo
 |---|---|
 | Swipe row right | Complete the task (or archive a list) |
 | Swipe row left | Delete |
+| Two-finger trackpad swipe | Same as above (left or right) |
 | Hover and drag the grip | Reorder |
 | Trackpad pinch apart | Add a new list or task (context-aware) |
 | Click the `+` icon | Add a new list or task |

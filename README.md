@@ -17,6 +17,7 @@ Inspired by the iOS app **Clear**: coloured heatmap rows, bold typography, no ch
 - **Gestures**:
   - Swipe a row **right**: complete (tasks) or archive (lists)
   - Swipe a row **left**: delete
+  - One-finger drag or two-finger trackpad swipe both work
   - Hover a row then drag the grip to reorder
   - Trackpad pinch apart to add a new task or list
 - **Keyboard-friendly**:
