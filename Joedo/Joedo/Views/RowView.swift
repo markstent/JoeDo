@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 // A single full-bleed, flat-colored row.
 struct RowView: View {
@@ -12,9 +13,7 @@ struct RowView: View {
     var allowSwipeLeft: Bool = true
 
     var rightBackdropColor: Color = .green
-    var rightBackdropIcon: String = "checkmark"
     var leftBackdropColor: Color = .red
-    var leftBackdropIcon: String = "xmark"
 
     var onTap: () -> Void = {}
     var onSwipeRight: () -> Void = {}
@@ -27,6 +26,7 @@ struct RowView: View {
     @State private var dragX: CGFloat = 0
     @State private var hovering: Bool = false
     @FocusState private var fieldFocused: Bool
+    @State private var scrollCtx = ScrollCtx()
 
     private let swipeThreshold: CGFloat = 80
     // Maximum the row can be dragged even if the user keeps pulling.
@@ -39,6 +39,7 @@ struct RowView: View {
     private var foreground: Color { color.preferredForeground() }
 
     var body: some View {
+        let _ = syncScrollCtx()
         ZStack {
             backdrop
             slab.offset(x: dragX)
@@ -59,6 +60,9 @@ struct RowView: View {
             try? await Task.sleep(nanoseconds: 40_000_000)
             fieldFocused = isEditing
         }
+        .background(ScrollCoordView(ctx: scrollCtx))
+        .onAppear { installScrollMonitor() }
+        .onDisappear { removeScrollMonitor() }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(title.isEmpty ? "Untitled row" : title)
         .accessibilityValue(isCompleted ? "Completed" : "Not completed")
@@ -71,25 +75,12 @@ struct RowView: View {
     private var backdrop: some View {
         ZStack {
             if allowSwipeRight {
-                ZStack(alignment: .leading) {
-                    rightBackdropColor
-                    Image(systemName: rightBackdropIcon)
-                        .font(.system(size: 22, weight: .bold))
-                        .foregroundStyle(.white)
-                        .padding(.leading, 24)
-                }
-                .opacity(dragX > 0 ? min(1, dragX / swipeThreshold) : 0)
+                rightBackdropColor
+                    .opacity(dragX > 0 ? min(1, dragX / swipeThreshold) : 0)
             }
-
             if allowSwipeLeft {
-                ZStack(alignment: .trailing) {
-                    leftBackdropColor
-                    Image(systemName: leftBackdropIcon)
-                        .font(.system(size: 22, weight: .bold))
-                        .foregroundStyle(.white)
-                        .padding(.trailing, 24)
-                }
-                .opacity(dragX < 0 ? min(1, -dragX / swipeThreshold) : 0)
+                leftBackdropColor
+                    .opacity(dragX < 0 ? min(1, -dragX / swipeThreshold) : 0)
             }
         }
     }
@@ -168,4 +159,118 @@ struct RowView: View {
         let eased = (swipeMax - swipeThreshold) * (1 - exp(-over / 40))
         return sign * (swipeThreshold + eased)
     }
+
+    // MARK: - Two-finger trackpad swipe
+
+    private func syncScrollCtx() {
+        scrollCtx.isEditing = isEditing
+        scrollCtx.allowRight = allowSwipeRight
+        scrollCtx.allowLeft = allowSwipeLeft
+        scrollCtx.threshold = swipeThreshold
+        scrollCtx.reduceMotion = reduceMotion
+        scrollCtx.onRight = onSwipeRight
+        scrollCtx.onLeft = onSwipeLeft
+    }
+
+    private func installScrollMonitor() {
+        guard scrollCtx.monitor == nil else { return }
+        scrollCtx.monitor = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { [self, scrollCtx] event in
+            guard event.hasPreciseScrollingDeltas else { return event }
+            guard !scrollCtx.isEditing else { return event }
+            guard let cv = scrollCtx.coordView, cv.window != nil else { return event }
+            let loc = cv.convert(event.locationInWindow, from: nil)
+            guard cv.bounds.contains(loc) else { return event }
+
+            if event.momentumPhase != [] {
+                return scrollCtx.handledLast ? nil : event
+            }
+
+            let dx = event.scrollingDeltaX
+            let dy = event.scrollingDeltaY
+
+            switch event.phase {
+            case .began:
+                scrollCtx.accumulator = 0
+                scrollCtx.locked = false
+                scrollCtx.handledLast = false
+            case .changed:
+                if !scrollCtx.locked && abs(dy) > abs(dx) * 1.2 {
+                    return event
+                }
+
+                scrollCtx.accumulator += dx
+
+                if !scrollCtx.locked && abs(scrollCtx.accumulator) > 6 {
+                    scrollCtx.locked = true
+                }
+
+                if scrollCtx.locked {
+                    if scrollCtx.accumulator > 0 && !scrollCtx.allowRight {
+                        scrollCtx.accumulator = 0; scrollCtx.locked = false; return event
+                    }
+                    if scrollCtx.accumulator < 0 && !scrollCtx.allowLeft {
+                        scrollCtx.accumulator = 0; scrollCtx.locked = false; return event
+                    }
+                    scrollCtx.handledLast = true
+                    dragX = taperedDrag(scrollCtx.accumulator)
+                    return nil
+                }
+            case .ended, .cancelled:
+                if scrollCtx.locked {
+                    let acc = scrollCtx.accumulator
+                    withAnimation(scrollCtx.reduceMotion ? DS.Motion.quick : DS.Motion.spring) {
+                        dragX = 0
+                    }
+                    if acc > scrollCtx.threshold, scrollCtx.allowRight { scrollCtx.onRight() }
+                    else if acc < -scrollCtx.threshold, scrollCtx.allowLeft { scrollCtx.onLeft() }
+                }
+                scrollCtx.accumulator = 0
+                scrollCtx.locked = false
+            default:
+                break
+            }
+
+            return event
+        }
+    }
+
+    private func removeScrollMonitor() {
+        if let m = scrollCtx.monitor { NSEvent.removeMonitor(m); scrollCtx.monitor = nil }
+    }
+}
+
+private final class ScrollCtx {
+    var monitor: Any?
+    weak var coordView: NSView?
+    var accumulator: CGFloat = 0
+    var locked: Bool = false
+    var handledLast: Bool = false
+    var isEditing: Bool = false
+    var allowRight: Bool = true
+    var allowLeft: Bool = true
+    var threshold: CGFloat = 80
+    var reduceMotion: Bool = false
+    var onRight: () -> Void = {}
+    var onLeft: () -> Void = {}
+}
+
+// Transparent background view that provides coordinate-space access for
+// the scroll monitor. Returns nil from hitTest so it never intercepts
+// clicks, drags, or any other user interaction.
+private struct ScrollCoordView: NSViewRepresentable {
+    let ctx: ScrollCtx
+
+    func makeNSView(context: Context) -> NSView {
+        let v = HitTransparentView()
+        ctx.coordView = v
+        return v
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        ctx.coordView = nsView
+    }
+}
+
+private final class HitTransparentView: NSView {
+    override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }

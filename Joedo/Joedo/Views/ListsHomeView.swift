@@ -421,7 +421,6 @@ private struct ListRow: View {
                 isEditing: isEditing,
                 isSelected: isSelected,
                 rightBackdropColor: .blue,
-                rightBackdropIcon: "archivebox",
                 onTap: onTap,
                 onSwipeRight: onSwipeArchive,
                 onSwipeLeft: onSwipeDelete,
