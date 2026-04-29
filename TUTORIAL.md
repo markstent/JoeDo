@@ -60,7 +60,8 @@ Click a list row. The view slides into the list's tasks.
 Right-click the list row and choose **Rename**, or press `⌘R` while the list is selected. Type the new name and press Enter.
 
 ### Archive a list
-Right-click the list row and choose **Archive** (or press `⌘E`).
+- Swipe the list row right past the blue mark, or
+- Right-click the list row and choose **Archive** (or press `⌘E`).
 
 Archived lists are hidden by default. To see them, open Settings and turn on **Show archived lists**. They appear underneath a thin `ARCHIVED` section divider, dimmed and desaturated so you can tell at a glance they're inactive.
 
@@ -113,11 +114,11 @@ Press `⇧⌘K` inside a list, or right-click a list on the home screen and choo
 
 | Gesture | What it does |
 |---|---|
-| Swipe row right | Complete the task |
-| Swipe row left | Delete the task |
+| Swipe row right | Complete the task (or archive a list) |
+| Swipe row left | Delete |
 | Hover and drag the grip | Reorder |
 | Trackpad pinch apart | Add a new list or task (context-aware) |
-| Click empty space below the rows | Add a new list or task |
+| Click the `+` icon | Add a new list or task |
 | Click a row | Edit (in a task list) or open (on Home) |
 | Right-click a row | Full context menu of options |
 

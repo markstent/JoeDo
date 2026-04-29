@@ -11,7 +11,7 @@ struct HelpView: View {
                     "Click a list to open it.",
                     "Click the + at the top, or ⌘N, to create a new list.",
                     "Right-click a list for Rename, Move, Archive, Clear Completed, Delete.",
-                    "Swipe left on a list row to delete it (and all its tasks).",
+                    "Swipe right on a list to archive it. Swipe left to delete.",
                 ])
                 divider
                 section("Tasks", lines: [
@@ -19,12 +19,11 @@ struct HelpView: View {
                     "Click a task to edit its title. Enter commits. Esc cancels.",
                     "Swipe right to complete. Swipe left to delete.",
                     "Right-click for the full menu with shortcuts.",
-                    "Clicking empty space below the rows also adds a task.",
                 ])
                 divider
                 section("Gestures", lines: [
-                    "Swipe right past the threshold: complete the task.",
-                    "Swipe left past the threshold: delete the task.",
+                    "Swipe right past the threshold: complete the task (or archive a list).",
+                    "Swipe left past the threshold: delete.",
                     "Hover a row: a small grip (≡) appears on the left. Drag the grip to reorder.",
                     "Pinch apart on the trackpad: add a new task/list.",
                 ])
@@ -61,7 +60,7 @@ struct HelpView: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: DS.Space.sm) {
                 Image(systemName: "checklist")
-                    .font(.system(size: 26, weight: .black))
+                    .font(.system(size: 26, weight: .bold))
                     .foregroundStyle(.secondary)
                 Text("Joedo Help")
                     .font(DS.Typo.display)

@@ -15,7 +15,7 @@ Inspired by the iOS app **Clear**: coloured heatmap rows, bold typography, no ch
 - **Menu-bar-first**: by default JoeDo lives in your menu bar. Click the checklist icon for a 440x560 popover with all your lists and tasks.
 - **Heatmap rows**: row colour equals priority. Top of the list is the hottest, bottom the chillest. Five themes: Heatmap, Sunset, Night Owl, Grass, Ultraviolet.
 - **Gestures**:
-  - Swipe a row **right**: complete
+  - Swipe a row **right**: complete (tasks) or archive (lists)
   - Swipe a row **left**: delete
   - Hover a row then drag the grip to reorder
   - Trackpad pinch apart to add a new task or list

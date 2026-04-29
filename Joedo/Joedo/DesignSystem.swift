@@ -7,21 +7,25 @@ enum DS {
     // MARK: - Typography
     enum Typo {
         /// Big screen titles ("Lists", the current list's name).
-        static let display  = Font.system(size: 26, weight: .black,    design: .rounded)
+        static let display  = Font.custom("Poppins-Bold", size: 26)
+        /// Compact title for the menu-bar popover.
+        static let displayCompact = Font.custom("Poppins-Bold", size: 20)
         /// Section titles inside Help / Settings.
-        static let section  = Font.system(size: 17, weight: .heavy,    design: .rounded)
+        static let section  = Font.custom("Poppins-SemiBold", size: 17)
         /// The bold coloured task/list row.
-        static let row      = Font.system(size: 19, weight: .black,    design: .rounded)
+        static let row      = Font.custom("Poppins-Bold", size: 19)
         /// Compact row variant for the menu-bar popover.
-        static let rowCompact = Font.system(size: 17, weight: .black,  design: .rounded)
+        static let rowCompact = Font.custom("Poppins-Bold", size: 17)
         /// Emphasis label (e.g. the `← Lists` back button).
-        static let label    = Font.system(size: 13, weight: .heavy,    design: .rounded)
+        static let label    = Font.custom("Poppins-SemiBold", size: 13)
         /// Readable prose (Help bullets, Settings descriptions).
-        static let body     = Font.system(size: 13, weight: .medium,   design: .rounded)
+        static let body     = Font.custom("Poppins-Regular", size: 13)
         /// Small secondary text (counts, captions).
-        static let caption  = Font.system(size: 12, weight: .semibold, design: .rounded)
+        static let caption  = Font.custom("Poppins-Medium", size: 12)
         /// Monospace shortcut glyphs.
         static let mono     = Font.system(size: 12, weight: .bold,     design: .monospaced)
+        /// Search field text.
+        static let search   = Font.custom("Poppins-SemiBold", size: 14)
     }
 
     // MARK: - Spacing (4pt base grid)

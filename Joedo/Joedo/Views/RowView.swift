@@ -11,9 +11,14 @@ struct RowView: View {
     var allowSwipeRight: Bool = true
     var allowSwipeLeft: Bool = true
 
+    var rightBackdropColor: Color = .green
+    var rightBackdropIcon: String = "checkmark"
+    var leftBackdropColor: Color = .red
+    var leftBackdropIcon: String = "xmark"
+
     var onTap: () -> Void = {}
-    var onSwipeComplete: () -> Void = {}
-    var onSwipeDelete: () -> Void = {}
+    var onSwipeRight: () -> Void = {}
+    var onSwipeLeft: () -> Void = {}
     var onEndEdit: () -> Void = {}
 
     @Environment(\.joedoCompact) private var compact
@@ -57,7 +62,7 @@ struct RowView: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(title.isEmpty ? "Untitled row" : title)
         .accessibilityValue(isCompleted ? "Completed" : "Not completed")
-        .accessibilityHint("Click to edit. Swipe right to complete. Swipe left to delete.")
+        .accessibilityHint("Click to edit. Swipe left or right to act.")
     }
 
     // MARK: - Subviews
@@ -67,9 +72,9 @@ struct RowView: View {
         ZStack {
             if allowSwipeRight {
                 ZStack(alignment: .leading) {
-                    Color.green
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 22, weight: .black))
+                    rightBackdropColor
+                    Image(systemName: rightBackdropIcon)
+                        .font(.system(size: 22, weight: .bold))
                         .foregroundStyle(.white)
                         .padding(.leading, 24)
                 }
@@ -78,9 +83,9 @@ struct RowView: View {
 
             if allowSwipeLeft {
                 ZStack(alignment: .trailing) {
-                    Color.red
-                    Image(systemName: "xmark")
-                        .font(.system(size: 22, weight: .black))
+                    leftBackdropColor
+                    Image(systemName: leftBackdropIcon)
+                        .font(.system(size: 22, weight: .bold))
                         .foregroundStyle(.white)
                         .padding(.trailing, 24)
                 }
@@ -150,8 +155,8 @@ struct RowView: View {
                 withAnimation(reduceMotion ? DS.Motion.quick : DS.Motion.spring) {
                     dragX = 0
                 }
-                if v > swipeThreshold, allowSwipeRight { onSwipeComplete() }
-                else if v < -swipeThreshold, allowSwipeLeft { onSwipeDelete() }
+                if v > swipeThreshold, allowSwipeRight { onSwipeRight() }
+                else if v < -swipeThreshold, allowSwipeLeft { onSwipeLeft() }
             }
     }
 

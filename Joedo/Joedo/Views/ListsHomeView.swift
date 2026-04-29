@@ -48,7 +48,7 @@ struct ListsHomeView: View {
 
     private var headerHeight: CGFloat { compact ? 44 : DS.Row.header }
     private var titleFont: Font {
-        compact ? .system(size: 20, weight: .black, design: .rounded) : DS.Typo.display
+        compact ? DS.Typo.displayCompact : DS.Typo.display
     }
 
     var body: some View {
@@ -142,8 +142,6 @@ struct ListsHomeView: View {
                 Color.clear
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 240)
-                    .contentShape(Rectangle())
-                    .onTapGesture { addNewList() }
             }
         }
         .scrollIndicators(.hidden)
@@ -186,7 +184,7 @@ struct ListsHomeView: View {
                 .fill(Color.white.opacity(0.18))
                 .frame(height: 1)
             Text("ARCHIVED")
-                .font(.system(size: 10, weight: .black, design: .rounded))
+                .font(Font.custom("Poppins-Bold", size: 10))
                 .tracking(1.5)
                 .foregroundStyle(.white.opacity(0.5))
                 .fixedSize()
@@ -209,11 +207,11 @@ struct ListsHomeView: View {
     private var searchBar: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 12, weight: .black))
+                .font(.system(size: 12, weight: .bold))
                 .foregroundStyle(.white.opacity(0.5))
             TextField("Search lists…", text: $searchText)
                 .textFieldStyle(.plain)
-                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .font(DS.Typo.search)
                 .foregroundStyle(.white)
                 .focused($searchFieldFocused)
                 .onExitCommand { searchActive = false; searchText = "" }
@@ -235,7 +233,7 @@ struct ListsHomeView: View {
 
     private var addZone: some View {
         Image(systemName: "plus")
-            .font(.system(size: 16, weight: .black))
+            .font(.system(size: 16, weight: .bold))
             .foregroundStyle(.white.opacity(0.3))
             .frame(maxWidth: .infinity)
             .frame(height: DS.Row.addZone)
@@ -422,10 +420,11 @@ private struct ListRow: View {
                 color: color,
                 isEditing: isEditing,
                 isSelected: isSelected,
-                allowSwipeRight: false,
+                rightBackdropColor: .blue,
+                rightBackdropIcon: "archivebox",
                 onTap: onTap,
-                onSwipeComplete: onSwipeArchive,
-                onSwipeDelete: onSwipeDelete,
+                onSwipeRight: onSwipeArchive,
+                onSwipeLeft: onSwipeDelete,
                 onEndEdit: onEndEdit
             )
             .dropDestination(for: String.self, action: { droppedIDs, _ in
@@ -448,16 +447,17 @@ private struct ListRow: View {
                 HStack {
                     Spacer()
                     Text("\(doneCount)/\(totalCount)")
-                        .font(.system(size: 12, weight: .black, design: .rounded))
+                        .font(Font.custom("Poppins-Bold", size: 11))
                         .foregroundStyle(.white.opacity(0.55))
-                        .padding(.trailing, 20)
                 }
+                .padding(.trailing, 20)
+                .frame(height: DS.Row.standard)
                 .allowsHitTesting(false)
             }
 
             HStack {
                 Image(systemName: "line.3.horizontal")
-                    .font(.system(size: 12, weight: .black))
+                    .font(.system(size: 12, weight: .bold))
                     .foregroundStyle(.white.opacity(hovering ? 0.85 : 0.40))
                     .padding(.leading, 10)
                     .frame(width: 40, height: DS.Row.standard)

@@ -158,11 +158,11 @@ private struct QuickAddView: View {
 
             HStack(spacing: DS.Space.sm) {
                 Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 20, weight: .black))
+                    .font(.system(size: 20, weight: .bold))
                     .foregroundStyle(Theme.heatmap.color(for: 0, of: 2))
                 TextField("Quick add to your top list…", text: $text)
                     .textFieldStyle(.plain)
-                    .font(.system(size: 17, weight: .semibold, design: .rounded))
+                    .font(DS.Typo.section)
                     .focused($focused)
                     .onSubmit {
                         let t = text.trimmingCharacters(in: .whitespaces)

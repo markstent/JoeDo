@@ -39,7 +39,7 @@ struct TaskListView: View {
 
     private var headerHeight: CGFloat { compact ? 44 : DS.Row.header }
     private var titleFont: Font {
-        compact ? .system(size: 20, weight: .black, design: .rounded) : DS.Typo.display
+        compact ? DS.Typo.displayCompact : DS.Typo.display
     }
 
     var body: some View {
@@ -156,8 +156,6 @@ struct TaskListView: View {
                 Color.clear
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 240)
-                    .contentShape(Rectangle())
-                    .onTapGesture { addNewTopTask() }
             }
         }
         .scrollIndicators(.hidden)
@@ -205,11 +203,11 @@ struct TaskListView: View {
     private var searchBar: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 12, weight: .black))
+                .font(.system(size: 12, weight: .bold))
                 .foregroundStyle(.white.opacity(0.5))
             TextField("Search tasks…", text: $searchText)
                 .textFieldStyle(.plain)
-                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .font(DS.Typo.search)
                 .foregroundStyle(.white)
                 .focused($searchFieldFocused)
                 .onExitCommand { searchActive = false; searchText = "" }
@@ -231,7 +229,7 @@ struct TaskListView: View {
 
     private var addZone: some View {
         Image(systemName: "plus")
-            .font(.system(size: 16, weight: .black))
+            .font(.system(size: 16, weight: .bold))
             .foregroundStyle(.white.opacity(0.3))
             .frame(maxWidth: .infinity)
             .frame(height: DS.Row.addZone)
@@ -455,8 +453,8 @@ private struct TaskRow: View {
                 isEditing: isEditing,
                 isSelected: isSelected,
                 onTap: onTap,
-                onSwipeComplete: onSwipeComplete,
-                onSwipeDelete: onSwipeDelete,
+                onSwipeRight: onSwipeComplete,
+                onSwipeLeft: onSwipeDelete,
                 onEndEdit: onEndEdit
             )
             .dropDestination(for: String.self, action: { droppedIDs, _ in
@@ -480,7 +478,7 @@ private struct TaskRow: View {
             // collide with the row's swipe DragGesture.
             HStack {
                 Image(systemName: "line.3.horizontal")
-                    .font(.system(size: 12, weight: .black))
+                    .font(.system(size: 12, weight: .bold))
                     .foregroundStyle(.white.opacity(hovering ? 0.85 : 0.40))
                     .padding(.leading, 10)
                     .frame(width: 40, height: DS.Row.standard)
